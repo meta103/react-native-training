@@ -19,7 +19,7 @@ const AVATAR_SIZE = 84;
 const { width } = Layout.window
 
 class ProfileScreen extends React.Component {
-  scrollY = new Animated.Value(0);
+  // TODO: create an Animated.Value that starts on 0 called `scrollY
 
   static navigationOptions = {
     header: null,
@@ -50,30 +50,29 @@ class ProfileScreen extends React.Component {
     const showBack = this.props.navigation.getParam("noBack");
     const { scrollY } = this;
 
-    let opacity = scrollY.interpolate({
-      inputRange: [0, 60, 100],
-      outputRange: [0, 0, 1]
-    });
-
-
-
+    /*
+      create a let value called `opacity` that interpolates `scrollY`
+      with the next values:
+      {
+        inputRange: [0, 60, 100],
+        outputRange: [0, 0, 1]
+      }
+    */
     return (
       <Screen>
         {this.state.loading ? (
           <ViewLoading />
         ) : (
-          <Animated.ScrollView
+          <ScrollView
             scrollEventThrottle={1}
-            //contentContainerStyle={{paddingTop: -64}}
-            onScroll={Animated.event([
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    y: this.scrollY
-                  }
-                }
-              }
-            ], { useNativeDriver: true})}
+            /*
+              Implements the `onScroll` event that updates `this.scrollY`
+              with `NativeEvent.contentOffset.y`.
+
+              Hint: use the "declarative" way...
+
+              documentation: https://facebook.github.io/react-native/docs/animations#tracking-gestures
+            */
           >
             <View style={[styles.header]}>
               <Animated.Image
@@ -94,9 +93,15 @@ class ProfileScreen extends React.Component {
             <View style={styles.content}>
               <Text>{JSON.stringify(this.state.user, null, 4)}</Text>
             </View>
-          </Animated.ScrollView>
+          </ScrollView>
         )}
-        <Animated.View style={{
+
+        {/*
+          The View above is the one receiving the opacity interpolated value.
+          So technically this is the View that will be animated, but its not animating.
+          why you think its not working??
+        */}
+        <View style={{
           opacity,
           position: 'absolute',
           top: 0,
@@ -114,7 +119,7 @@ class ProfileScreen extends React.Component {
           backgroundColor={Colors.brand.primary}
         />
         <StatusBar barStyle="light-content" />
-        </Animated.View>
+        </View>
       </Screen>
     );
   }
